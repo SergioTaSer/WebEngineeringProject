@@ -1,0 +1,36 @@
+services:
+  node:
+    image: node:20.6
+    user: node
+    working_dir: /home/node/app
+    restart: unless-stopped
+    volumes:
+      - ./:/home/node/app
+    ports:
+      - 3000:3000
+      - 9229:9229
+    depends_on:
+      mongo:
+        condition: service_healthy
+    command: npm run dev
+  mongo:
+    image: mongo:7.0
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongo:27017/test --quiet
+      interval: 2s
+      timeout: 10s
+      retries: 14
+      start_period: 2s
+    volumes:
+      - mongo-db:/data/db
+    ports:
+      - 27017:27017
+    command: --quiet
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  mongo-db:
