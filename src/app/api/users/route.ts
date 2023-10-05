@@ -12,9 +12,16 @@ export async function POST(
 
   const userId = await createUser(body);
 
-  if (userId === null) {
+  if (userId === null  ) {
     return NextResponse.json({}, { status: 400 });
   }
+
+  
+
+  if (body.email.length !== 0) {
+    return NextResponse.json({}, { status: 400 });
+  }
+ 
 
   const headers = new Headers();
   headers.append('Location', `/api/users/${userId._id}`);

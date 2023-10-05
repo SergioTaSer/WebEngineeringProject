@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser, UserResponse } from '@/lib/handlers';
+import { getCart, UserResponse } from '@/lib/handlers';
 
 export async function GET(
   request: NextRequest,
@@ -14,7 +14,7 @@ export async function GET(
     return NextResponse.json({}, { status: 400 });
   }
 
-  const user = await getUser(params.userId);
+  const user = await getCart(params.userId);
 
   if (user === null) {
     return NextResponse.json({}, { status: 404 });

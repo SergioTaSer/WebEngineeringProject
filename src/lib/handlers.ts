@@ -4,6 +4,7 @@ import Users, { User } from '@/models/User';
 import Orders, { Order } from '@/models/Order';
 import { Types } from 'mongoose';
 
+
 export interface UserResponse {
     email: string;
     name: string;
@@ -86,6 +87,26 @@ export async function getProducts(): Promise<ProductsResponse>{
 
 }
 
+export async function getProducts1(productId: string): Promise<ProductsResponse>{
+  await connect();
+
+  const productProjection = {
+    name: true,
+    price: true,
+    img: true,
+    description:true,
+  };
+
+  
+  const products = await Products.find({}, productProjection);
+  
+  return {
+    products: products,
+  };
+  
+
+}
+
 
 export interface CreateOrderResponse {
   _id: Types.ObjectId | string;
@@ -134,3 +155,124 @@ export async function createOrder(order: {
     }
     return order;
     }
+
+    //UpdateCartItem function to perform PUT operation
+
+export async function updateCartItem(
+  userId: string,
+  productId: string,
+  qty: number
+): Promise<UpdateCartItemResponse | null> {
+  await connect();
+  var created;
+
+  const product = await Products.findById(productId);
+  if (product === null) return null;
+
+  const user = await Users.findById(userId);
+  if (user === null) return null;
+
+  const cartItem = user.cartItems.find(
+    (cartItem: any) =>
+      cartItem.product._id.equals(productId)
+  );
+
+  if (cartItem) {
+    //TRUE: Cambiamos la cantidad
+    cartItem.qty = qty
+    created = false
+  } else {
+    //cambiamos la cantidad
+    const newCartItem = {
+      product: new Types.ObjectId(productId),
+      qty: qty
+    }
+
+    user.cartItems.push(newCartItem);
+    created = true
+  }
+
+  await user.save();
+
+  const userProjection = {
+    _id: false,
+    cartItems: true
+  }
+
+  const productProjection = {
+    name: true,
+    price: true
+  };
+
+  const updatedUser = await Users
+    .findById(userId, userProjection).populate("cartItems.product", productProjection)
+
+  const output = {
+    cartItems: updatedUser,
+    created: created
+  };
+
+  return output; //// tenemos que devolver un boolean tambien
+}
+
+
+
+export interface UpdateCartItemResponse {
+  cartItems: User['cartItems'],
+  created: boolean;
+}
+
+
+
+
+
+export interface CartItem {
+  product: {
+    _id: string;
+    name: string;
+    price: number;
+  };
+  qty: number;
+}
+
+export interface CartResponse {
+  cartItems: CartItem[];
+}
+
+export async function getCart(userId: string): Promise<CartResponse | null> {
+  await connect();
+
+  const cartProjection = {
+    'cartItems.product': true,
+    'cartItems.qty': true,
+  };
+
+  const cartResponse = await Users.findById(userId, cartProjection);
+
+  if (cartResponse === null) {
+    return null;
+  }
+
+ 
+  const cartItemsDetails = await Promise.all(
+    cartResponse.cartItems.map(async (item: any) => {
+      const productDetails = await Products.findById(item.product);
+      return {
+        product: {
+          _id: productDetails._id,
+          name: productDetails.name,
+          price: productDetails.price,
+        },
+        qty: item.qty,
+      };
+    })
+  );
+
+  
+  const cart1Response: CartResponse = {
+    cartItems: cartItemsDetails,
+  };
+
+  return cart1Response;
+}
+
