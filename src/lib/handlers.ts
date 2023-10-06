@@ -5,6 +5,7 @@ import Orders, { Order } from '@/models/Order';
 import { Types } from 'mongoose';
 
 
+
 export interface UserResponse {
     email: string;
     name: string;
@@ -113,51 +114,78 @@ export interface CreateOrderResponse {
 }
 
 export async function createOrder(order: {
-  date:Date,
-  address:string;
+  address: string;
   cardHolder: string;
   cardNumber: string;
-}): Promise <CreateOrderResponse | null>{
+}): Promise<CreateOrderResponse | null> {
   await connect();
-
-  
 
   const doc1: Order = {
     ...order,
-    //date://fecha actual,
+    date: new Date(), // Agrega la fecha actual
     orderItems: [],
   };
 
   const newOrder = await Orders.create(doc1);
 
   return {
-    _id: newOrder._id,
+    _id: newOrder._id.toString(), // Convierte el ObjectId a una cadena
   };
 }
 
-  export interface OrderResponse {
-    address: string;
-    date: Date;
-    cardHolder: string;
-    cardNumber: string;
-    }
-    export async function getOrder(orderId: string): Promise<OrderResponse | null> {
-    await connect();
-    const userProjection = {
-      address: true,
-      date: true,
-      cardHolder: true,
-      cardNumber: true
-    };
-    const order = await Orders.findById(orderId, userProjection);
-    if (order === null) {
+
+
+
+export interface OrderItem {
+  _id: string;
+  address: string;
+  date: string; 
+  cardHolder: string;
+  cardNumber: string;
+}
+
+export interface OrderResponse {
+  orders: OrderItem[]; 
+}
+
+export async function getOrder(userId: string): Promise<OrderResponse | null> {
+  await connect();
+
+  const orderProjection = {
+    _id: true,
+    address: true,
+    date: true,
+    cardHolder: true,
+    cardNumber: true,
+  };
+  if (userId === null) {
     return null;
-    }
-    return order;
-    }
+  }
+  const orders = await Orders.find({}, orderProjection);
+  if (orders === null) {
+    return null;
+  }
+
+  return {
+    orders: orders.map((order) => ({
+      _id: order._id.toString(),
+      address: order.address,
+      date: order.date.toISOString(), // Formatea la fecha como ISOString
+      cardHolder: order.cardHolder,
+      cardNumber: order.cardNumber,
+    })),
+  };
+}
+
+
 
     //UpdateCartItem function to perform PUT operation
 
+    export interface UpdateCartItemResponse {
+      cartItems: User['cartItems'],
+      created: boolean;
+    }
+    
 export async function updateCartItem(
   userId: string,
   productId: string,
@@ -217,10 +245,6 @@ export async function updateCartItem(
 
 
 
-export interface UpdateCartItemResponse {
-  cartItems: User['cartItems'],
-  created: boolean;
-}
 
 
 
@@ -276,3 +300,68 @@ export async function getCart(userId: string): Promise<CartResponse | null> {
   return cart1Response;
 }
 
+
+
+export async function removeFromCart(userId: string, productId: string): Promise<CartResponse | {}> {
+  if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(productId)) {
+    return { status: 400, message: 'Invalid userId or productId' };
+  }
+
+  await connect();
+
+  try {
+    // Obtiene el carrito actual del usuario
+    const cartResponse = await getCart(userId);
+
+    if (!cartResponse) {
+      return { status: 404, message: 'Cart not found' };
+    }
+
+    // Encuentra el índice del producto que se va a eliminar en el carrito
+    const productIndex = cartResponse.cartItems.findIndex(
+      (item: CartItem) => item.product._id === productId
+    );
+
+    if (productIndex === -1) {
+      return { status: 404, message: 'Product not found in cart' };
+    }
+
+    // Elimina el producto del carrito
+    cartResponse.cartItems.splice(productIndex, 1);
+
+    // Actualiza el carrito en la base de datos
+    const updatedCart = await Users.findByIdAndUpdate(
+      userId,
+      { 'cartItems': cartResponse.cartItems },
+      { new: true }
+    );
+
+    if (!updatedCart) {
+      return { status: 404, message: 'Failed to update cart' };
+    }
+
+    // Retorna el carrito actualizado
+    const cartResponseDetails = await Promise.all(
+      updatedCart.cartItems.map(async (item: any) => {
+        const productDetails = await Products.findById(item.product);
+        return {
+          product: {
+            _id: productDetails._id,
+            name: productDetails.name,
+            price: productDetails.price,
+          },
+          qty: item.qty,
+        };
+      })
+    );
+
+    const updatedCartResponse: CartResponse = {
+      cartItems: cartResponseDetails,
+    };
+
+    return updatedCartResponse;
+  } catch (error) {
+    console.error(error);
+    return { status: 500, message: 'Internal server error' };
+  }
+}

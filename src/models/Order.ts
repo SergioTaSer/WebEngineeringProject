@@ -26,12 +26,12 @@ const OrderSchema = new Schema({
   cardHolder: {
     type: String,
     required: true,
-    unique: true,
+    unique: false,
   },
   cardNumber: {
     type: String,
     required: true,
-    unique: true,
+    unique: false,
   },
   orderItems: [
     {
