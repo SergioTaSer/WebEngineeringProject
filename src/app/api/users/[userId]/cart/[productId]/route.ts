@@ -62,15 +62,14 @@ export async function DELETE(
       return new NextResponse('Cart not found', { status: 404 });
     }
 
-    // Formatea la respuesta como un objeto JSON válido
+    
     const jsonResponse = {
       cartItems: output.cartItems,
     };
 
-    // Convierte el objeto JSON a una cadena
+  
     const responseBody = JSON.stringify(jsonResponse);
 
-    // Establece el estado 200 y el tipo de contenido JSON
     return new NextResponse(responseBody, {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

@@ -3,6 +3,10 @@ import connect from '@/lib/mongoose';
 import Users, { User } from '@/models/User';
 import Orders, { Order } from '@/models/Order';
 import { Types } from 'mongoose';
+import bcrypt from 'bcrypt';
+
+
+
 
 
 
@@ -56,13 +60,14 @@ export interface CreateUserResponse {
       return null;
     }
   
+    const hash = await bcrypt.hash(user.password, 10);
     const doc: User = {
       ...user,
+      password: await bcrypt.hash("1234", 10),
       birthdate: new Date(user.birthdate),
       cartItems: [],
       orders: [],
     };
-  
     const newUser = await Users.create(doc);
   
     return {
@@ -99,8 +104,8 @@ export async function getProducts1(productId: string): Promise<ProductsResponse>
   };
 
   
-  const products = await Products.find({}, productProjection);
   
+  const products = await Products.findById(productId, productProjection);
   return {
     products: products,
   };
@@ -122,14 +127,14 @@ export async function createOrder(order: {
 
   const doc1: Order = {
     ...order,
-    date: new Date(), // Agrega la fecha actual
+    date: new Date(), 
     orderItems: [],
   };
 
   const newOrder = await Orders.create(doc1);
 
   return {
-    _id: newOrder._id.toString(), // Convierte el ObjectId a una cadena
+    _id: newOrder._id.toString(),
   };
 }
 
@@ -165,21 +170,23 @@ export async function getOrder(userId: string): Promise<OrderResponse | null> {
   if (orders === null) {
     return null;
   }
+  const userProjection = {
+    _id: false,
+    orders:true
+  }
+  const updatedUser = await Users
+  .findById(userId, userProjection).populate("orders", orderProjection);
+  
 
   return {
-    orders: orders.map((order) => ({
-      _id: order._id.toString(),
-      address: order.address,
-      date: order.date.toISOString(), // Formatea la fecha como ISOString
-      cardHolder: order.cardHolder,
-      cardNumber: order.cardNumber,
-    })),
-  };
+    orders: updatedUser,
+    
+  }
 }
 
 
 
-    //UpdateCartItem function to perform PUT operation
+   
 
     export interface UpdateCartItemResponse {
       cartItems: User['cartItems'],
@@ -240,7 +247,7 @@ export async function updateCartItem(
     created: created
   };
 
-  return output; //// tenemos que devolver un boolean tambien
+  return output; //tenemos que devolver un boolean 
 }
 
 
@@ -319,7 +326,7 @@ export async function removeFromCart(userId: string, productId: string): Promise
 
     // Encuentra el índice del producto que se va a eliminar en el carrito
     const productIndex = cartResponse.cartItems.findIndex(
-      (item: CartItem) => item.product._id === productId
+      (item: CartItem) => item.product._id == productId
     );
 
     if (productIndex === -1) {
@@ -368,34 +375,112 @@ export async function removeFromCart(userId: string, productId: string): Promise
 
 
 
-export async function getOrder1(userId: string): Promise<OrderResponse | null> {
+
+export async function getOrder1(
+  userId: string,
+  orderId: string,
+): Promise<OrderResponse | null> {
   await connect();
 
-  if (!Types.ObjectId.isValid(userId)) {
+  const orderProjection={
+    _id:true,
+    address: true,
+    date: true,
+    cardHolder: true,
+    cardNumber: true,
+    orderItems: {
+      product: true,
+      qty:true,
+      price:true
+    },
+  }
+
+  const userProjection={
+    _id: false,
+    orders:true,
+  }
+  const productProjection={
+    _id: true,
+    name:true,
+  }
+
+  const user = await Users.findById( userId, userProjection);
+  if (user===null) return null;
+
+  let user_orderId = user.orders.filter((orders: any) =>
+    orders._id.equals(orderId));
+
+  if (!user_orderId)
+    return null;
+
+  const order = await Orders.findById(orderId, orderProjection).populate('orderItems.product', productProjection);
+
+  if (order === null) {
     return null;
   }
 
-  const order = await Orders.findOne({ _id: userId });
+  return order;
+}
 
-  if (!order) {
-    return null;
-  }
 
-  // Obtén los detalles de la orden y los elementos de la orden
-  const orderDetails = {
-    _id: order._id.toString(),
-    address: order.address,
-    date: order.date.toISOString(),
-    cardHolder: order.cardHolder,
-    cardNumber: order.cardNumber,
-    orderItems: order.orderItems.map((orderItem:any) => ({
-      product: orderItem.product.toString(),
-      qty: orderItem.qty,
-      price: orderItem.price,
-    })),
+
+
+
+
+
+
+
+
+export async function createOrderwithid(order: {
+  address: string,
+  cardHolder: string,
+  cardNumber: string,
+  userId: string
+}): Promise<CreateOrderResponse | null> {
+  await connect();
+
+  const user = await Users.findById(order.userId);
+  if (user === null) return null;
+
+  
+
+    const productProjection = {
+      name: true,
+      price: true
+    };
+    const cambio =await user.populate('cartItems.product',productProjection);
+ 
+
+
+
+    let orderItems=[];
+
+
+for (let cartItem of cambio.cartItems) {
+  orderItems.push({
+    product: cartItem.product._id,
+    qty: cartItem.qty,
+    price: cartItem.product.price,
+  });
+}
+
+
+  const doc1: Order = {
+    ...order,
+    date: new Date(),
+    orderItems:orderItems
   };
 
+  const newOrder = await Orders.create(doc1);
+  
+  
+  user.orders.push(newOrder._id);
+  user.cartItems=[];
+  await user.save();
   return {
-    orders: [orderDetails],
+    _id: newOrder._id.toString(),
   };
 }
+
+
+

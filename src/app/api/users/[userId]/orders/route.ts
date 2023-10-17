@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createOrder, CreateOrderResponse } from '@/lib/handlers';
+import { createOrder, CreateOrderResponse, createOrderwithid } from '@/lib/handlers';
 import { getOrder, OrderResponse } from '@/lib/handlers';
 import mongoose, { Types } from 'mongoose';
 
@@ -22,7 +22,13 @@ export async function POST(
   if (params.userId === null) {
     return NextResponse.json({}, { status: 404 });
   }
-  const orderId = await createOrder(body);
+  const orderId = await createOrderwithid({
+    address: body.address,
+    cardHolder: body.cardHolder,
+    cardNumber: body.cardNumber,
+    userId: params.userId,
+  });
+  
 
   if (orderId === null) {
     return NextResponse.json({}, { status: 400 });
