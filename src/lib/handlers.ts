@@ -365,3 +365,37 @@ export async function removeFromCart(userId: string, productId: string): Promise
     return { status: 500, message: 'Internal server error' };
   }
 }
+
+
+
+export async function getOrder1(userId: string): Promise<OrderResponse | null> {
+  await connect();
+
+  if (!Types.ObjectId.isValid(userId)) {
+    return null;
+  }
+
+  const order = await Orders.findOne({ _id: userId });
+
+  if (!order) {
+    return null;
+  }
+
+  // Obtén los detalles de la orden y los elementos de la orden
+  const orderDetails = {
+    _id: order._id.toString(),
+    address: order.address,
+    date: order.date.toISOString(),
+    cardHolder: order.cardHolder,
+    cardNumber: order.cardNumber,
+    orderItems: order.orderItems.map((orderItem:any) => ({
+      product: orderItem.product.toString(),
+      qty: orderItem.qty,
+      price: orderItem.price,
+    })),
+  };
+
+  return {
+    orders: [orderDetails],
+  };
+}
