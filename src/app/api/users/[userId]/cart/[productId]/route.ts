@@ -4,6 +4,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { NonNullChain } from 'typescript';
 import { CartResponse, removeFromCart } from '@/lib/handlers';
 
+
+import { Session } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/authOptions';
+
 export async function PUT(
   request: NextRequest,
   {
@@ -12,6 +17,17 @@ export async function PUT(
     params: { userId: string; productId: string };
   }
 ): Promise<NextResponse<UpdateCartItemResponse> | null | {}> {
+  const session: Session | null = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    return NextResponse.json({}, { status: 401 });
+  }
+  if (!Types.ObjectId.isValid(params.userId)) {
+    return NextResponse.json({}, { status: 400 });
+  }
+  if (session.user._id !== params.userId) {
+    return NextResponse.json({}, { status: 403 });
+  }
   const body = await request.json();
 
   if (
@@ -48,6 +64,16 @@ export async function DELETE(
     params: { userId: string; productId: string };
   }
 ): Promise<NextResponse> {
+
+  const session: Session | null = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    return NextResponse.json({}, { status: 401 });
+  }
+  
+  if (session.user._id !== params.userId) {
+    return NextResponse.json({}, { status: 403 });
+  }
   if (
     !Types.ObjectId.isValid(params.userId) ||
     !Types.ObjectId.isValid(params.productId)

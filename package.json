@@ -9,7 +9,9 @@
     "lint": "next lint",
     "format": "prettier --check --ignore-path .gitignore ./src",
     "format:fix": "prettier --write --ignore-path .gitignore ./src",
-    "seed": "tsx db/seeder.ts"
+    "seed": "tsx db/seeder.ts",
+    "handler": "tsx db/handlers.ts"
+    
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",

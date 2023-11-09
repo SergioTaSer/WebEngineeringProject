@@ -8,8 +8,6 @@ import bcrypt from 'bcrypt';
 
 
 
-
-
 export interface UserResponse {
     email: string;
     name: string;
@@ -63,7 +61,7 @@ export interface CreateUserResponse {
     const hash = await bcrypt.hash(user.password, 10);
     const doc: User = {
       ...user,
-      password: await bcrypt.hash("1234", 10),
+      password: hash,
       birthdate: new Date(user.birthdate),
       cartItems: [],
       orders: [],
