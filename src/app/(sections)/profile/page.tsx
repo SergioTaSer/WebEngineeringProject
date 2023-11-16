@@ -100,7 +100,6 @@ export default async function Profile() {
             <p className='mt-2 text-xl font-bold text-blue-300'>
               {order._id}
             </p>
-       
         </td>
         <td className='border p-2 text-center'>
           <div className='flex items-center justify-center'>
