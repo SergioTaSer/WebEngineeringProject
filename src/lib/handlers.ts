@@ -14,6 +14,7 @@ export interface UserResponse {
     surname: string;
     address: string;
     birthdate: Date;
+    orders: Types.ObjectId[];
   }
   
   export async function getUser(userId: string): Promise<UserResponse | null>  {
@@ -25,6 +26,7 @@ export interface UserResponse {
       surname: true,
       address: true,
       birthdate: true,
+      orders: true,
     };
     const user = await Users.findById(userId, userProjection);
   
@@ -36,6 +38,12 @@ export interface UserResponse {
   }
 export interface ProductsResponse {
   products: Product[];
+}
+export interface ProductsResponse1 {
+  name: string;
+  price:number;
+  img?: string;
+  description: string;
 }
 
 export interface CreateUserResponse {
@@ -49,6 +57,7 @@ export interface CreateUserResponse {
     surname: string;
     address: string;
     birthdate: Date;
+    orders: Types.ObjectId[];
   }): Promise <CreateUserResponse | null>{
     await connect();
   
@@ -91,7 +100,7 @@ export async function getProducts(): Promise<ProductsResponse>{
 
 }
 
-export async function getProducts1(productId: string): Promise<ProductsResponse>{
+export async function getProducts1(productId: string): Promise<ProductsResponse1>{
   await connect();
 
   const productProjection = {
@@ -104,9 +113,8 @@ export async function getProducts1(productId: string): Promise<ProductsResponse>
   
   
   const products = await Products.findById(productId, productProjection);
-  return {
-    products: products,
-  };
+  return products;
+  
   
 
 }
@@ -136,6 +144,18 @@ export async function createOrder(order: {
   };
 }
 
+export interface OrderItem1 {
+  _id: string;
+  address: string;
+  date: string; 
+  cardHolder: string;
+  cardNumber: string;
+  orderItems: {
+    product: Types.ObjectId;
+    qty: number,
+    price:number;
+  }[];
+}
 
 
 
@@ -145,13 +165,18 @@ export interface OrderItem {
   date: string; 
   cardHolder: string;
   cardNumber: string;
+  orderItems: {
+    product: Types.ObjectId;
+    qty: number,
+    price:number;
+  }[];
 }
 
 export interface OrderResponse {
   orders: OrderItem[]; 
 }
 
-export async function getOrder(userId: string): Promise<OrderResponse | null> {
+export async function getOrder(userId: string): Promise<OrderItem1 | null> {
   await connect();
 
   const orderProjection = {
@@ -160,26 +185,35 @@ export async function getOrder(userId: string): Promise<OrderResponse | null> {
     date: true,
     cardHolder: true,
     cardNumber: true,
+    orderItems: true,
   };
-  if (userId === null) {
-    return null;
-  }
-  const orders = await Orders.find({}, orderProjection);
-  if (orders === null) {
+  if (!userId) {
     return null;
   }
   const userProjection = {
     _id: false,
-    orders:true
-  }
-  const updatedUser = await Users
-  .findById(userId, userProjection).populate("orders", orderProjection);
-  
+    orders: true,
+  };
+  const updatedUser = await Users.findById(userId, userProjection).populate("orders", orderProjection);
 
-  return {
-    orders: updatedUser,
-    
+  if (!updatedUser) {
+    return null;
   }
+
+  const orderItem1: OrderItem1 = {
+    _id: updatedUser._id,
+    address: updatedUser.address,
+    date: updatedUser.date,
+    cardHolder: updatedUser.cardHolder,
+    cardNumber: updatedUser.cardNumber,
+    orderItems: updatedUser.orders.map((order: any) => ({
+      product: order.product,
+      qty: order.qty,
+      price: order.price,
+    })),
+  };
+
+  return orderItem1;
 }
 
 
@@ -377,7 +411,7 @@ export async function removeFromCart(userId: string, productId: string): Promise
 export async function getOrder1(
   userId: string,
   orderId: string,
-): Promise<OrderResponse | null> {
+): Promise<OrderItem1 | null> {
   await connect();
 
   const orderProjection={

@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
-import { getCart, UserResponse } from '@/lib/handlers';
+import { getUser, UserResponse } from '@/lib/handlers';
 
 import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
@@ -26,7 +26,7 @@ if (session.user._id !== params.userId) {
   return NextResponse.json({}, { status: 403 });
 }
   
-  const user = await getCart(params.userId);
+  const user = await getUser(params.userId);
 
   if (user === null) {
     return NextResponse.json({}, { status: 404 });

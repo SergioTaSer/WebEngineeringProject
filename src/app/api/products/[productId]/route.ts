@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
-import { getProducts1, ProductsResponse } from '@/lib/handlers';
+import { getProducts1, ProductsResponse1 } from '@/lib/handlers';
 
 export async function GET(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function GET(
   }: {
     params: { productId: string };
   }
-): Promise <NextResponse<ProductsResponse> | {}> {
+): Promise <NextResponse<ProductsResponse1> | {}> {
   if (!Types.ObjectId.isValid(params.productId)) {
     return NextResponse.json({}, { status: 400 });
   }
