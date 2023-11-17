@@ -144,18 +144,7 @@ export async function createOrder(order: {
   };
 }
 
-export interface OrderItem1 {
-  _id: string;
-  address: string;
-  date: string; 
-  cardHolder: string;
-  cardNumber: string;
-  orderItems: {
-    product: Types.ObjectId;
-    qty: number,
-    price:number;
-  }[];
-}
+
 
 
 
@@ -176,47 +165,45 @@ export interface OrderResponse {
   orders: OrderItem[]; 
 }
 
-export async function getOrder(userId: string): Promise<OrderItem1 | null> {
-  await connect();
+
+
+export interface OrderItem1
+{
+  orders: {
+    _id: Types.ObjectId | string,
+    address: string,
+    date: Date,
+    cardHolder: string;
+    cardNumber: number;
+  }[]
+}
+
+export async function getOrder
+(
+  userId:string
+): Promise<any | null>
+{
+  await connect()
+
+  const userOrdersProjection = {
+    _id:false,
+    orders: true
+  }
 
   const orderProjection = {
     _id: true,
-    address: true,
-    date: true,
-    cardHolder: true,
-    cardNumber: true,
-    orderItems: true,
-  };
-  if (!userId) {
-    return null;
-  }
-  const userProjection = {
-    _id: false,
-    orders: true,
-  };
-  const updatedUser = await Users.findById(userId, userProjection).populate("orders", orderProjection);
-
-  if (!updatedUser) {
-    return null;
+    address:true,
+    date:true,
+    cardHolder:true,
+    cardNumber:true,
   }
 
-  const orderItem1: OrderItem1 = {
-    _id: updatedUser._id,
-    address: updatedUser.address,
-    date: updatedUser.date,
-    cardHolder: updatedUser.cardHolder,
-    cardNumber: updatedUser.cardNumber,
-    orderItems: updatedUser.orders.map((order: any) => ({
-      product: order.product,
-      qty: order.qty,
-      price: order.price,
-    })),
-  };
+  let orderUserOrders = await Users
+    .findById(userId, userOrdersProjection)
+    .populate('orders', orderProjection)
 
-  return orderItem1;
+  return orderUserOrders;
 }
-
-
 
    
 
@@ -411,7 +398,7 @@ export async function removeFromCart(userId: string, productId: string): Promise
 export async function getOrder1(
   userId: string,
   orderId: string,
-): Promise<OrderItem1 | null> {
+): Promise<OrderItem | null> {
   await connect();
 
   const orderProjection={
