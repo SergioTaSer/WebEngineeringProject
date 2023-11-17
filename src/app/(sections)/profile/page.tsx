@@ -94,13 +94,14 @@ export default async function Profile() {
     </tr>
   </thead>
   <tbody>
-    {data.orderItems.map((order:any) => (
+    {data.orders.map((order:any) => (
        <tr key={order.product} className='border'>
         <td className='border p-2'>
+        <Link href={`/orders/${order._id}`}>
             <p className='mt-2 text-xl font-bold text-blue-300'>
               {order._id}
             </p>
-       
+       </Link>
         </td>
         <td className='border p-2 text-center'>
           <div className='flex items-center justify-center'>
@@ -111,12 +112,12 @@ export default async function Profile() {
           </div>
         </td>
         <td className='border p-2 text-center'>
-          <div className='flex items-center justify-center'>
-            
-            <p className=" p-2 rounded">{order.cardNumber} ({order.cardHolder})</p>
-            
-          </div>
-        </td>
+  <div className='flex flex-col items-center justify-center'>
+    <p className="p-1 rounded font-bold">{order.cardHolder}</p>
+    <p className="p-1 rounded">{order.cardNumber}</p>
+  </div>
+</td>
+
 
     <td className='border p-2 text-center'>
       <div className='flex items-center justify-center'>
