@@ -94,28 +94,29 @@ export default async function Profile() {
     </tr>
   </thead>
   <tbody>
-  {data.orders.map((order: any) => (
-  <tr key={order._id} className='border'>
-    <td className='border p-2'>
-    <Link href={`/orders/${order._id}`}>
-      <p className='mt-2 text-xl font-bold text-blue-300'>
-        {order._id}
-      </p>
-      </Link>
-    </td>
-    <td className='border p-2 text-center'>
-      <div className='flex items-center justify-center'>
-        <p className="p-2 rounded">{order.address}</p>
-      </div>
-    </td>
-    <td className='border p-2 text-center'>
-  <div className='flex flex-col items-center justify-center'>
-    <p className="p-1 rounded font-bold">{order.cardHolder}</p>
-    <p className="p-1 rounded">{order.cardNumber}</p>
-  </div>
-</td>
-
-
+    {data.orderItems.map((order:any) => (
+       <tr key={order.product} className='border'>
+        <td className='border p-2'>
+            <p className='mt-2 text-xl font-bold text-blue-300'>
+              {order._id}
+            </p>
+       
+        </td>
+        <td className='border p-2 text-center'>
+          <div className='flex items-center justify-center'>
+            
+            <p className=" p-2 rounded">{order.address}</p>
+           
+            
+          </div>
+        </td>
+        <td className='border p-2 text-center'>
+          <div className='flex items-center justify-center'>
+            
+            <p className=" p-2 rounded">{order.cardNumber} ({order.cardHolder})</p>
+            
+          </div>
+        </td>
 
     <td className='border p-2 text-center'>
       <div className='flex items-center justify-center'>

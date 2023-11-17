@@ -28,7 +28,7 @@
     "eslint-config-prettier": "^9.0.0",
     "mongoose": "^7.5.0",
     "next": "^13.4.19",
-    "next-auth": "^4.22.1",
+    "next-auth": "^4.24.5",
     "passport-google-oauth20": "^2.0.0",
     "postcss": "8.4.29",
     "prettier": "^3.0.0",
