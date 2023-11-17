@@ -97,11 +97,11 @@ export default async function Profile() {
     {data.orders.map((order:any) => (
        <tr key={order.product} className='border'>
         <td className='border p-2'>
-        <Link href={`/orders/${order._id}`}>
+        
             <p className='mt-2 text-xl font-bold text-blue-300'>
               {order._id}
             </p>
-       </Link>
+  
         </td>
         <td className='border p-2 text-center'>
           <div className='flex items-center justify-center'>
