@@ -24,6 +24,10 @@ export default async function Product({
 
   const cartItemsData: CartResponse | null = await getCart(session.user._id);
 
+  const productCartItem = cartItemsData?.cartItems.find((cartItem) => cartItem.product._id == params.productId) 
+
+
+
 
 
   if (!cartItemsData) {
@@ -58,16 +62,16 @@ export default async function Product({
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
               </svg>
             </button>
-            {cartItemsData.cartItems.map((cartItem) => (
-              <div key={cartItem.product._id} className="flex items-center">
-                <p className="bg-white p-2 rounded w-20">{cartItem.qty}</p>
+            
+              <div className="flex items-center justify-center">
+                <p className="bg-white p-2 rounded w-20 text-center ">{productCartItem!==undefined? productCartItem.qty:0}</p>
                 <button className="mx-1 bg-gray-300 p-2 rounded">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
                   </svg>
                 </button>
               </div>
-            ))}
+          
 
             <button className="mx-2 bg-red-300 p-2 rounded">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
