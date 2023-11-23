@@ -48,7 +48,7 @@ interface CartItemCounterProps {
     return(
         <>
           {cartItems.length === 0}
-            <td className='border p-2 text-center'>
+            <div className='border p-2 text-center'>
               <div className='flex items-center justify-center'>
                 <button onClick={onPlusBtnClick} className="mx-1 bg-gray-300 p-2 rounded"
                 disabled={!session || isUpdating}>
@@ -70,7 +70,7 @@ interface CartItemCounterProps {
                 </svg>
                 </button>
               </div>
-            </td>
+            </div>
           
        
         </>
