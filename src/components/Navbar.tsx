@@ -24,7 +24,7 @@ import {
                 <img
                   className='block h-8 w-auto'
                   src='/img/logo.svg'
-                  alt='GameShop logo'
+                  alt='FilmShop logo'
                 />
                 <div className='inline-block w-auto text-xl font-semibold'>
                   FilmShop
