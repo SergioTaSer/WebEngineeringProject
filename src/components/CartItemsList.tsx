@@ -2,16 +2,13 @@
 
 import { CartItemsContext } from '@/providers/CartItemsProvider';
 import Link from 'next/link';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import CartItemCounter from './CartItemCounter';
-import { useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+
 
 export default function CartItemsList() {
 
     const {cartItems, updateCartItems} = useContext(CartItemsContext);
-    
-    
 
     return(
         <>
@@ -39,6 +36,7 @@ export default function CartItemsList() {
                 </p>
               </Link>
             </td>
+            
             <CartItemCounter
               productId={cartItem.product._id.toString()}
               />
