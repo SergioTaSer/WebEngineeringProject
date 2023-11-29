@@ -4,11 +4,29 @@ import { CartItemsContext } from '@/providers/CartItemsProvider';
 import Link from 'next/link';
 import { useContext, useEffect, useState } from 'react';
 import CartItemCounter from './CartItemCounter';
+import { useSession } from 'next-auth/react';
 
 
 export default function CartItemsList() {
 
-    const {cartItems, updateCartItems} = useContext(CartItemsContext);
+  const { cartItems, updateCartItems } = useContext(CartItemsContext);
+    const { data: session } = useSession({ required: true });
+
+    useEffect(() => {
+      if (session) {
+        const fetchData = async function () {
+          const res = await fetch(`/api/users/${session.user._id}/cart`);
+          const body = await res.json();
+          updateCartItems(body.cartItems);
+        };
+  
+        fetchData().catch(console.error);
+      } else {
+        updateCartItems([]);
+      }
+    }, [session]);
+      
+
 
     return(
         <>
