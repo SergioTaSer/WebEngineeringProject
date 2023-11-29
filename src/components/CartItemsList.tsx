@@ -4,11 +4,14 @@ import { CartItemsContext } from '@/providers/CartItemsProvider';
 import Link from 'next/link';
 import { useContext } from 'react';
 import CartItemCounter from './CartItemCounter';
-
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function CartItemsList() {
 
     const {cartItems, updateCartItems} = useContext(CartItemsContext);
+    
+    
 
     return(
         <>
