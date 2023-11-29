@@ -117,8 +117,6 @@ interface CartItemCounterProps {
                 </button>
               </div>
             </div>
-          
-       
         </>
     );
 
