@@ -4,6 +4,7 @@ import {
     UserIcon,
   } from '@heroicons/react/24/outline';
   import NavbarCartButton from '@/components/NavbarCartButton';
+  import NavbarSignOutButton from '@/components/NavbarSignOutButton';
   import NavbarButton from '@/components/NavbarButton';
 
   import { authOptions } from '@/lib/authOptions';
@@ -44,18 +45,18 @@ import {
                     <span className='sr-only'>User profile</span>
                     <UserIcon className='h-6 w-6' aria-hidden='true' />
                   </NavbarButton>
-                  <NavbarButton href='/api/auth/signout'>
+                  <NavbarSignOutButton>
                     <span className='sr-only'>Sign out</span>
                     <ArrowRightOnRectangleIcon
                       className='h-6 w-6'
                       aria-hidden='true'
                     />
-                  </NavbarButton>
+                  </NavbarSignOutButton>
                 </>
               ) : (
                 <>
                   <Link
-                    href='/api/auth/signup'
+                    href='/auth/signup'
                     className='rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-gray-100'
                   >
                     Sign up
