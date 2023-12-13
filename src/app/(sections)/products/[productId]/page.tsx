@@ -44,8 +44,8 @@ export default async function Product({
   }
 
   return (
-    <div className='flex '>
-      <div className="flex-1" style={{ flex: '0 0 50%' }}>
+    <div className='flex flex-col sm:flex-row'>
+      <div className="flex-1 sm:w-1/2">
         <h3 className='pb-4 text-3xl font-bold text-gray-900 sm:pb-4 lg:pb-2'>
           {product.name}
         </h3>
@@ -53,32 +53,21 @@ export default async function Product({
           src={product.img}
           className='mt-4 h-80 w-full object-cover object-center overflow-hidden rounded-lg bg-gray-200'
         />
-        <p className='mt-1 text-xxl font-small text-center text-black-400' style={{ fontSize: '3em' }}>
+        <p className='mt-1 text-3xl font-small text-center text-black-400 sm:text-4xl'>
           {product.price + ' €'}
         </p>
-        
         <CartItemCounter productId={params.productId} />
-
       </div>
-      
+  
       <div className="flex-1 ml-4">
-        <div className="mt-20 text-2xl font-bold overflow-hidden dark:text-black-900 ">
+        <div className="mt-20 text-2xl font-bold overflow-hidden dark:text-black-900">
           Product Details
         </div>
-
-        <div className="mt-5 text-lg dark:text-black-900">
+        <div className="mt-5 text-lg overflow-hidden dark:text-black-900">
           {product.description}
         </div>
-
       </div>
-
-      
     </div>
-
-
-
-
-
-
   );
+  
 }

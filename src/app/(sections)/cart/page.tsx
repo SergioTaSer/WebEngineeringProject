@@ -29,17 +29,18 @@ export default async function Cart() {
       <h3 className='pb-4 text-3xl font-bold text-gray-900 sm:pb-6 lg:pb-8'>
         My Shopping Cart
       </h3>
-     
-      <CartItemsList/>
-
-
-     
-      <a className="block mx-auto mt-4 bg-blue-500 text-white p-3 rounded-lg" href="/checkout">Checkout</a>
-
-
-     
+  
+      <CartItemsList />
+  
+      <a
+        className="block mx-auto mt-4 bg-blue-500 text-white p-3 rounded-lg sm:w-1/2 lg:w-1/3"
+        href="/checkout"
+      >
+        Checkout
+      </a>
     </div>
   );
+  
 }
 
 

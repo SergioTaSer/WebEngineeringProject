@@ -32,44 +32,47 @@ export default async function Cart() {
           <span className='text-sm text-gray-400'>The cart is empty</span>
         </div>
       ) : (
-        <table className='w-full border mb-4'>
-          <thead>
-            <tr>
-              <th className='bg-gray-200 text-left border p-2'>Product Name</th>
-              <th className='bg-gray-200 border p-2'>Quantity</th>
-              <th className='bg-gray-200 border p-2'>Price</th>
-              <th className='bg-gray-200 border p-2'>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cartItemsData.cartItems.map((cartItem) => (
-              <tr key={cartItem.product._id.toString()} className='border'>
-                <td className='border p-2'>
-                  <Link href={`/products/${cartItem.product._id}`}>
-                    <p className='mt-2 text-xl font-bold text-blue-300'>
-                      {cartItem.product.name}
-                    </p>
-                  </Link>
-                </td>
-                <td className='border p-2 text-center'>
-                  <div className='flex items-center justify-center'>
-                    <p>{cartItem.qty}</p>
-                  </div>
-                </td>
-                <td className='border p-2'>{cartItem.product.price.toFixed(2) + ' €'}</td>
-                <td className='border p-2'>{(cartItem.qty * cartItem.product.price).toFixed(2) + ' €'}</td>
+        <div className='overflow-x-auto'>
+          <table className='w-full border mb-4'>
+            <thead>
+              <tr>
+                <th className='bg-gray-200 text-left border p-2'>Product Name</th>
+                <th className='bg-gray-200 border p-2'>Quantity</th>
+                <th className='bg-gray-200 border p-2'>Price</th>
+                <th className='bg-gray-200 border p-2'>Total</th>
               </tr>
-            ))}
-            <tr className='border'>
-              <td className='border p-2'>Total</td>
-              <td className='border'></td>
-              <td className='border'></td>
-              <td className='border p-2'>
-                {cartItemsData.cartItems.reduce((total, cartItem) => total + cartItem.qty * cartItem.product.price, 0).toFixed(2) + ' €'}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {cartItemsData.cartItems.map((cartItem) => (
+                <tr key={cartItem.product._id.toString()} className='border'>
+                  <td className='border p-2'>
+                    <Link href={`/products/${cartItem.product._id}`}>
+                      <p className='mt-2 text-xl font-bold text-blue-300'>
+                        {cartItem.product.name}
+                      </p>
+                    </Link>
+                  </td>
+                  <td className='border p-2 text-center'>
+                    <div className='flex items-center justify-center'>
+                      <p>{cartItem.qty}</p>
+                    </div>
+                  </td>
+                  <td className='border p-2'>{cartItem.product.price.toFixed(2) + ' €'}</td>
+                  <td className='border p-2'>{(cartItem.qty * cartItem.product.price).toFixed(2) + ' €'}</td>
+                </tr>
+              ))}
+              <tr className='border'>
+                <td className='border p-2'>Total</td>
+                <td className='border'></td>
+                <td className='border'></td>
+                <td className='border p-2'>
+                  {cartItemsData.cartItems.reduce((total, cartItem) => total + cartItem.qty * cartItem.product.price, 0).toFixed(2) + ' €'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       )}
 
       <div className='w-full pb-4 mt-4'>
@@ -85,8 +88,8 @@ export default async function Cart() {
         />
       </div>
 
-      <div className='flex pb-4'>
-        <div className='w-1/2 pr-2'>
+      <div className='flex flex-col sm:flex-row pb-4'>
+        <div className='w-full sm:w-1/2 pr-0 sm:pr-2'>
           <label htmlFor='cardHolder' className='block text-sm font-medium text-gray-700'>
             Card Holder
           </label>
@@ -98,7 +101,7 @@ export default async function Cart() {
             placeholder='Foo Bar'
           />
         </div>
-        <div className='w-1/2 pl-2'>
+        <div className='w-full sm:w-1/2 pl-0 sm:pl-2 mt-4 sm:mt-0'>
           <label htmlFor='cardNumber' className='block text-sm font-medium text-gray-700'>
             Card Number
           </label>
@@ -112,7 +115,7 @@ export default async function Cart() {
         </div>
       </div>
       {!isCartEmpty && (
-        <a className="block mx-auto mt-4 bg-blue-500 text-white p-3 rounded-lg" href="#">Purchase</a>
+        <a className="block mx-auto mt-4 bg-blue-500 text-white p-3 rounded-lg sm:w-1/2 lg:w-1/3" href="#">Purchase</a>
       )}
      
 
