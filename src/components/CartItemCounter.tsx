@@ -76,7 +76,7 @@ interface CartItemCounterProps {
           {
             method: 'DELETE',
             body: JSON.stringify({
-              qty: qty-qty,
+              qty: 0,
             }),
           }
         );
@@ -89,6 +89,20 @@ interface CartItemCounterProps {
         setIsUpdating(false);
       }
     };
+
+    useEffect(() => {
+      if (session) {
+        const fetchData = async function () {
+          const res = await fetch(`/api/users/${session.user._id}/cart`);
+          const body = await res.json();
+          updateCartItems(body.cartItems);
+        };
+  
+        fetchData().catch(console.error);
+      } else {
+        updateCartItems([]);
+      }
+    }, [session]);
 
 
     return(

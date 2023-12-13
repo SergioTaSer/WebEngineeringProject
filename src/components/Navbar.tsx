@@ -10,6 +10,7 @@ import {
   import { getServerSession } from 'next-auth/next';
   import Link from 'next/link';
   import { Session } from 'next-auth';
+import NavbarSignOutButton from './NavbarSignOutButton';
   
   export default async function Navbar() {
     const session: Session | null = await getServerSession(authOptions);
@@ -44,13 +45,13 @@ import {
                     <span className='sr-only'>User profile</span>
                     <UserIcon className='h-6 w-6' aria-hidden='true' />
                   </NavbarButton>
-                  <NavbarButton href='/api/auth/signout'>
+                  <NavbarSignOutButton>
                     <span className='sr-only'>Sign out</span>
                     <ArrowRightOnRectangleIcon
                       className='h-6 w-6'
                       aria-hidden='true'
                     />
-                  </NavbarButton>
+                  </NavbarSignOutButton>
                 </>
               ) : (
                 <>
