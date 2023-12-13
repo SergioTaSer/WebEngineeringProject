@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -33,26 +33,34 @@ export default function SignUpForm() {
     if (!event.currentTarget.checkValidity()) {
       return false;
     }
-    const res = await signIn('credentials', {
-      ...formValues,
-      redirect: false,
-    });
-    if (!res?.error) {
-      setError('');
-      router.push('/');
-      router.refresh();
-    } else {
-      if (res?.error) {
-        setError(
-          `An error occurred while processing your request: ${res.error}.`
+        
+      try {
+        const res = await fetch(
+          `/api/users/`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+             name:formValues.name,
+             surname:formValues.surname,
+             birthdate:formValues.birthdate,
+             address:formValues.address,
+             email:formValues.email,
+             password:formValues.password
+  
+            }),
+          }
         );
-      } else {
-        setError(
-          'An error occurred while processing your request. Please try again later.'
-        );
+    
+        if (res.ok) {
+          setError('');
+          router.push('/');
+          router.refresh();
+        }
+      } finally {
+  
       }
-    }
-  };
+  }
+ 
 
   return (
     <form className='group space-y-6' onSubmit={handleSubmit} noValidate>
@@ -143,16 +151,16 @@ export default function SignUpForm() {
 
       <div>
         <label
-          htmlFor='birthday'
+          htmlFor='birthdate'
           className='block text-sm font-medium leading-6 text-gray-900'
         >
-          Birthday
+          Birthdate
         </label>
         <input
-          id='birthday'
-          name='birthday'
-          type='birthday'
-          autoComplete='birthday'
+          id='birthdate'
+          name='birthdate'
+          type='birthdate'
+          autoComplete='birthdate'
           placeholder='xx/xx/xxxx'
           required
           className='peer mt-2 block w-full rounded-md border-0 px-1.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 invalid:[&:not(:placeholder-shown):not(:focus)]:ring-red-500'
@@ -165,7 +173,7 @@ export default function SignUpForm() {
           }
         />
         <p className='mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'>
-          Please provide a valid birthday.
+          Please provide a valid birthdate.
         </p>
       </div>
 
@@ -237,6 +245,7 @@ export default function SignUpForm() {
 
       <div>
         <button
+        
           type='submit'
           className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 group-invalid:pointer-events-none group-invalid:opacity-30'
         >
