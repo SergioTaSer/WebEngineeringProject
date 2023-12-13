@@ -53,7 +53,7 @@ export default async function Product({
           src={product.img}
           className='mt-4 h-80 w-full object-cover object-center overflow-hidden rounded-lg bg-gray-200'
         />
-        <p className='mt-1 text-3xl font-small text-center text-black-400 sm:text-4xl'>
+        <p className='mt-3 text-3xl font-small text-center text-black-400 sm:text-4xl'>
           {product.price + ' €'}
         </p>
         <CartItemCounter productId={params.productId} />
