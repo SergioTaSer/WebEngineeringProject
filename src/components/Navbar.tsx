@@ -15,7 +15,7 @@ import {
     const session: Session | null = await getServerSession(authOptions);
   
     return (
-      <nav className='fixed top-0 z-50 w-full bg-violet-950 bg-opacity-90 backdrop-blur-lg backdrop-filter'>
+      <nav className='fixed top-0 z-50 w-full bg-white-950 bg-opacity-90 backdrop-blur-lg backdrop-filter'>
         <div className='mx-auto max-w-7xl px-6 sm:px-8 lg:px-10'>
           <div className='relative flex h-16 items-center justify-between'>
             <div className='flex flex-1 items-stretch justify-start'>
@@ -25,7 +25,7 @@ import {
               >
                 <img
                   className='block h-8 w-auto'
-                  src='/img/logo.svg'
+                  src='/img/logo2.svg'
                   alt='FilmShop logo'
                 />
                 <div className='inline-block w-auto text-xl font-semibold'>

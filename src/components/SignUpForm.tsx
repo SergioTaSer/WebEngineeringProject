@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 interface FormValues {
   name: string;
   surname: string;
+  address: string;
+  birthdate: string;
   email: string;
   password: string;
 }
@@ -17,6 +19,8 @@ export default function SignUpForm() {
   const [formValues, setFormValues] = useState<FormValues>({
     name:'',
     surname:'',
+    address:'',
+    birthdate:'',
     email: '',
     password: '',
 
@@ -106,6 +110,62 @@ export default function SignUpForm() {
         />
         <p className='mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'>
           Please provide a valid surname.
+        </p>
+      </div>
+
+      <div>
+        <label
+          htmlFor='address'
+          className='block text-sm font-medium leading-6 text-gray-900'
+        >
+          Address
+        </label>
+        <input
+          id='address'
+          name='address'
+          type='address'
+          autoComplete='address'
+          placeholder='Albacete, Calle XXXX, numero XX'
+          required
+          className='peer mt-2 block w-full rounded-md border-0 px-1.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 invalid:[&:not(:placeholder-shown):not(:focus)]:ring-red-500'
+          value={formValues.address}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormValues((prevFormValues) => ({
+              ...prevFormValues,
+              address: e.target.value,
+            }))
+          }
+        />
+        <p className='mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'>
+          Please provide a valid address.
+        </p>
+      </div>
+
+      <div>
+        <label
+          htmlFor='birthday'
+          className='block text-sm font-medium leading-6 text-gray-900'
+        >
+          Birthday
+        </label>
+        <input
+          id='birthday'
+          name='birthday'
+          type='birthday'
+          autoComplete='birthday'
+          placeholder='xx/xx/xxxx'
+          required
+          className='peer mt-2 block w-full rounded-md border-0 px-1.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 invalid:[&:not(:placeholder-shown):not(:focus)]:ring-red-500'
+          value={formValues.birthdate}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormValues((prevFormValues) => ({
+              ...prevFormValues,
+              birthdate: e.target.value,
+            }))
+          }
+        />
+        <p className='mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'>
+          Please provide a valid birthday.
         </p>
       </div>
 
