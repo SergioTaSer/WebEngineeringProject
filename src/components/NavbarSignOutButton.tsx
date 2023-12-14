@@ -3,7 +3,8 @@
 import { ReactNode } from 'react';
 import { navbarButtonClasses } from '@/components/NavbarButton';
 import Link from 'next/link';
-import{signOut} from "next-auth/react";
+import { NextAuthProvider } from '@/providers/NextAuthProvider';
+import { signOut } from "next-auth/react"
 
 
 
