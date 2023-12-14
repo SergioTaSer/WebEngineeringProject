@@ -55,6 +55,8 @@ export default function SignUpForm() {
           setError('');
           router.push('/');
           router.refresh();
+        }else{
+          
         }
       } finally {
   
@@ -159,7 +161,7 @@ export default function SignUpForm() {
         <input
           id='birthdate'
           name='birthdate'
-          type='birthdate'
+          type='date'
           autoComplete='birthdate'
           placeholder='xx/xx/xxxx'
           required
