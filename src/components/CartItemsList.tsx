@@ -40,9 +40,9 @@ export default function CartItemsList() {
           <thead>
             <tr>
               <th className='bg-gray-200 text-left border p-2'>Product Name</th>
-              <th className='bg-gray-200 border p-2'>Quantity</th>
-              <th className='bg-gray-200 border p-2'>Price</th>
-              <th className='bg-gray-200 border p-2'>Total</th>
+              <th className='bg-gray-200 text-center border p-2'>Quantity</th>
+              <th className='bg-gray-200 text-center border p-2'>Price</th>
+              <th className='bg-gray-200 text-center border p-2'>Total</th>
             </tr>
           </thead>
           <tbody>
@@ -50,7 +50,7 @@ export default function CartItemsList() {
               <tr key={cartItem.product._id.toString()} className='border'>
                 <td className='border p-2'>
                   <Link href={`/products/${cartItem.product._id}`}>
-                    <p className='mt-2 text-xl font-bold text-blue-300'>
+                    <p className='mt-2 text-xl font-bold text-gray-600'>
                       {cartItem.product.name}
                     </p>
                   </Link>
@@ -59,15 +59,15 @@ export default function CartItemsList() {
                 <CartItemCounter
                   productId={cartItem.product._id.toString()}
                   />
-                <td className='border p-2'>{cartItem.product.price.toFixed(2) + ' €'}</td>
-                <td className='border p-2'>{(cartItem.qty * cartItem.product.price).toFixed(2) + ' €'}</td>
+                <td className='text-center border p-2'>{cartItem.product.price.toFixed(2) + ' €'}</td>
+                <td className='text-center border p-2'>{(cartItem.qty * cartItem.product.price).toFixed(2) + ' €'}</td>
               </tr>
             ))}
             <tr className='border'>
               <td className='border p-2'>Total</td>
-              <td className='border'></td>
-              <td className='border'></td>
-              <td className='border p-2'>
+              <td className='text-center border'></td>
+              <td className='text-center border'></td>
+              <td className='text-center border p-2'>
                 {cartItems.reduce((total, cartItem) => total + cartItem.qty * cartItem.product.price, 0).toFixed(2) + ' €'}
               </td>
             </tr>

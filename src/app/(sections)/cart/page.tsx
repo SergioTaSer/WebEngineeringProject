@@ -33,7 +33,7 @@ export default async function Cart() {
       <CartItemsList />
   
       <a
-        className="block mx-auto mt-4 bg-blue-500 text-white p-3 rounded-lg sm:w-1/2 lg:w-1/3"
+        className="block mx-auto mt-6 bg-blue-500 text-white text-center p-3 rounded-lg sm:w-1/2 lg:w-1/3"
         href="/checkout"
       >
         Checkout

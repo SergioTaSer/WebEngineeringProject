@@ -1,6 +1,5 @@
 'use client';
 
-
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -16,11 +15,12 @@ interface FormValues {
 export default function SignUpForm() {
   const router = useRouter(); 
   const [error, setError] = useState<string>('');
+
   const [formValues, setFormValues] = useState<FormValues>({
     name:'',
     surname:'',
     address:'',
-    birthdate:'',
+    birthdate:'01/01/2000',
     email: '',
     password: '',
 
@@ -34,7 +34,6 @@ export default function SignUpForm() {
       return false;
     }
         
-      try {
         const res = await fetch(
           `/api/users/`,
           {
@@ -50,18 +49,25 @@ export default function SignUpForm() {
             }),
           }
         );
-    
+
         if (res.ok) {
           setError('');
           router.push('/');
           router.refresh();
-        }else{
-          
+          }else{
+          if (!res.ok && (res.status===400)){
+            setError(
+                `Please provide a valid email address.`
+            )
+          }
+          else {
+            setError(
+              'An error occurred while processing your request. Please try again later.'
+            );
+          }
         }
-      } finally {
-  
-      }
-  }
+  };
+
  
 
   return (
