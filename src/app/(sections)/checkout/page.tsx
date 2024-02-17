@@ -20,6 +20,7 @@ export default async function Cart() {
     notFound();
   }
 
+
   const isCartEmpty = cartItemsData.cartItems.length === 0;
   return (
     <div className='flex flex-col'>
